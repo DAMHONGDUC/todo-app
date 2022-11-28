@@ -4,18 +4,13 @@ import Dropdown from "react-dropdown";
 import "react-js-dialog-box/dist/index.css";
 import "react-dropdown/style.css";
 import PropTypes from "prop-types";
-
-export const statuses = [
-  { value: 0, label: "Complete" },
-  { value: 1, label: "Incomplate" },
-];
-
-const INCOMPLATE_VALUE = 1;
+import { statuses } from "./Body";
+import { INCOMPLETE_STATUS } from "./Body";
 
 export default class AddTask extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { valueTitle: "", status: INCOMPLATE_VALUE };
+    this.state = { valueTitle: "", status: INCOMPLETE_STATUS };
   }
 
   handleChangeTitle(event) {
@@ -51,7 +46,7 @@ export default class AddTask extends React.Component {
           <div>
             <Dropdown
               options={statuses}
-              value={statuses.find((e) => e.value === INCOMPLATE_VALUE).label}
+              value={statuses.find((e) => e.value === INCOMPLETE_STATUS).label}
               onChange={(objectValue) => this.handleChangeCombobox(objectValue)}
             />
           </div>

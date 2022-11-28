@@ -9,10 +9,20 @@ import "react-dropdown/style.css";
 export const mode = [
   { value: 0, label: "All" },
   { value: 1, label: "Complete" },
-  { value: 2, label: "Incomplate" },
+  { value: 2, label: "Incomplete" },
+];
+
+export const statuses = [
+  { value: 0, label: "Complete" },
+  { value: 1, label: "Incomplete" },
 ];
 
 const ALL_MODE = 0;
+const COMPLETE_MODE = 1;
+const INCOMPLETE_MODE = 2;
+
+export const INCOMPLETE_STATUS = 1;
+export const COMPLETE_STATUS = 0;
 
 export default class Body extends Component {
   constructor(props) {
@@ -96,6 +106,15 @@ export default class Body extends Component {
   }
 
   render() {
+    let ListTasks = this.state.tasks;
+    if (this.state.currMode === COMPLETE_MODE) {
+      ListTasks = this.state.tasks.filter((e) => e.status === COMPLETE_STATUS);
+    } else if (this.state.currMode === INCOMPLETE_MODE) {
+      ListTasks = this.state.tasks.filter(
+        (e) => e.status === INCOMPLETE_STATUS
+      );
+    }
+
     return (
       <div style={{ padding: 20 }}>
         <button
@@ -121,7 +140,7 @@ export default class Body extends Component {
         )}
 
         <div style={{ marginTop: 50 }}>
-          {this.state.tasks.map((e) => (
+          {ListTasks.map((e) => (
             <Task onSelectTask={this.onSelectTask} key={e.id} task={e}></Task>
           ))}
         </div>
