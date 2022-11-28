@@ -11,19 +11,32 @@ export default class Task extends Component {
   render() {
     let datetime = new Date(this.props.task.date).toLocaleString("en-US");
     return (
-      <div style={{ marginTop: 20 }}>
-        <div>
-          <Checkbox
-            onChange={(value) =>
-              this.props.onSelectTask(this.props.task.id, value)
-            }
-            defaultChecked={false}
-          ></Checkbox>
-        </div>
-
-        <p>{this.props.task.name}</p>
-        <p>{datetime}</p>
-      </div>
+      <table style={{ padding: 20, background: "#BC8F8F", marginBottom: 20 }}>
+        <tr>
+          <td>
+            <Checkbox
+              style={{ marginRight: 10 }}
+              onChange={(value) =>
+                this.props.onSelectTask(this.props.task.id, value)
+              }
+              defaultChecked={false}
+            ></Checkbox>
+          </td>
+          <td>{this.props.task.name}</td>
+          <td>
+            <button style={{ marginLeft: 100, width: 50 }}>edit</button>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <label style={{ fontSize: 13 }}>{datetime}</label>
+          </td>
+          <td>
+            <button style={{ marginLeft: 100, width: 50 }}>delete</button>
+          </td>
+        </tr>
+      </table>
     );
   }
 }

@@ -1,14 +1,18 @@
 "use strict";
 import React, { Component } from "react";
 import Task from "./Task";
-import { ReactDialogBox } from "react-js-dialog-box";
+import AddTask from "./AddTask";
+import Dropdown from "react-dropdown";
 import "react-js-dialog-box/dist/index.css";
-import Combobox from "react-widgets/Combobox";
+import "react-dropdown/style.css";
 
-let statuses = [
-  { id: 0, name: "Complete" },
-  { id: 1, name: "Incomplate" },
+export const mode = [
+  { value: 0, label: "All" },
+  { value: 1, label: "Complete" },
+  { value: 2, label: "Incomplate" },
 ];
+
+const ALL_MODE = 0;
 
 export default class Body extends Component {
   constructor(props) {
@@ -21,11 +25,28 @@ export default class Body extends Component {
           id: 1,
           name: "task 1",
           date: Date.now(),
-          isChecked: false,
+          status: 1,
+        },
+        {
+          id: 2,
+          name: "task 2",
+          date: Date.now(),
+          status: 0,
+        },
+        {
+          id: 3,
+          name: "task 3",
+          date: Date.now(),
+          status: 1,
         },
       ],
-      valueCombobox: 1,
+      currMode: ALL_MODE,
     };
+
+    this.onSelectTask = this.onSelectTask.bind(this);
+    this.addTask = this.addTask.bind(this);
+    this.openDialog = this.openDialog.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
   }
 
   openDialog = () => {
@@ -40,27 +61,20 @@ export default class Body extends Component {
     });
   };
 
-  addTask() {
+  addTask(title, status) {
     let newTask = {
       id: this.state.tasks.length + 1,
-      name: this.state.valueTitle,
+      name: title,
       date: Date.now(),
-      isChecked: false,
+      status: status,
     };
 
     this.setState({
       tasks: [...this.state.tasks, newTask],
     });
 
+    console.log(newTask);
     this.closeDialog();
-  }
-
-  handleChangeTitle(event) {
-    this.setState({ valueTitle: event.target.value });
-  }
-
-  handleChangeCombobox(value) {
-    this.setState({ valueCombobox: value.id });
   }
 
   onSelectTask(id, value) {
@@ -71,58 +85,44 @@ export default class Body extends Component {
     this.setState({
       tasks: newTasks,
     });
+
+    console.log("select ", id);
+  }
+
+  onChangeMode(objectValue) {
+    this.setState({
+      currMode: objectValue.value,
+    });
   }
 
   render() {
     return (
-      <div>
-        <button onClick={() => this.openDialog()}>Add</button>
+      <div style={{ padding: 20 }}>
+        <button
+          style={{ width: 100, height: 40, marginBottom: 20 }}
+          onClick={() => this.openDialog()}
+        >
+          Add Task
+        </button>
+        <div style={{ width: 150 }}>
+          <Dropdown
+            options={mode}
+            value={mode.find((e) => e.value === ALL_MODE).label}
+            onChange={(objectValue) => this.onChangeMode(objectValue)}
+          />
+        </div>
+
         {this.state.isShowDialog && (
-          <>
-            <ReactDialogBox
-              closeBox={() => this.closeDialog()}
-              modalWidth="60%"
-              headerBackgroundColor="red"
-              headerTextColor="white"
-              headerHeight="65"
-              closeButtonColor="white"
-              bodyBackgroundColor="white"
-              bodyTextColor="black"
-              bodyHeight="200px"
-              headerText="Add Task"
-            >
-              <div>
-                <div>Title</div>
-                <input
-                  onChange={(event) => this.handleChangeTitle(event)}
-                ></input>
-
-                <div style={{ marginTop: 20 }}>Status</div>
-                <div>
-                  <Combobox
-                    data={statuses}
-                    dataKey="id"
-                    textField="name"
-                    defaultValue={1}
-                    onChange={(value) => this.handleChangeCombobox(value)}
-                  />
-                </div>
-
-                <div style={{ marginTop: 50 }}>
-                  <button onClick={() => this.addTask()}>Add</button>
-                  <button>Cancel</button>
-                </div>
-              </div>
-            </ReactDialogBox>
-          </>
+          <AddTask
+            addTask={this.addTask}
+            openDialog={this.openDialog}
+            closeDialog={this.closeDialog}
+          ></AddTask>
         )}
-        <div>
+
+        <div style={{ marginTop: 50 }}>
           {this.state.tasks.map((e) => (
-            <Task
-              onSelectTask={(id, value) => this.onSelectTask(id, value)}
-              key={e.id}
-              task={e}
-            ></Task>
+            <Task onSelectTask={this.onSelectTask} key={e.id} task={e}></Task>
           ))}
         </div>
       </div>

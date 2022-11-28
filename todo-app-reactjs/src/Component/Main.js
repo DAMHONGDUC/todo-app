@@ -12,7 +12,16 @@ export default class Main extends Component {
         }}
       >
         <div>
-          <label style={{ fontSize: 30, fontWeight: "bold" }}>TODO LIST</label>
+          <label
+            style={{
+              marginLeft: 120,
+              fontSize: 30,
+              fontWeight: "bold",
+              color: "#f00",
+            }}
+          >
+            TODO LIST
+          </label>
           <Body></Body>
         </div>
       </div>
