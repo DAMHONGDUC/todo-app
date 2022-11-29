@@ -20,14 +20,19 @@ export default class Task extends Component {
               onChange={(value) =>
                 this.props.onSelectTask(this.props.task.id, value)
               }
-              defaultChecked={
+              checked={
                 this.props.task.status === COMPLETE_STATUS ? true : false
               }
             ></Checkbox>
           </td>
           <td>{this.props.task.name}</td>
           <td>
-            <button style={{ marginLeft: 100, width: 50 }}>edit</button>
+            <button
+              onClick={() => this.props.activeEditMode(this.props.task)}
+              style={{ marginLeft: 100, width: 50 }}
+            >
+              edit
+            </button>
           </td>
         </tr>
         <tr>
@@ -53,4 +58,5 @@ Task.propTypes = {
   task: PropTypes.object,
   onSelectTask: PropTypes.func,
   onDeleteTask: PropTypes.func,
+  activeEditMode: PropTypes.func,
 };

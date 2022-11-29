@@ -7,10 +7,19 @@ import PropTypes from "prop-types";
 import { statuses } from "./Body";
 import { INCOMPLETE_STATUS } from "./Body";
 
-export default class AddTask extends React.Component {
+export default class DialogInputTask extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { valueTitle: "", status: INCOMPLETE_STATUS };
+    this.state = {
+      valueTitle:
+        this.props.editOption.isEditOption === true
+          ? this.props.editOption.editElement.name
+          : "",
+      status:
+        this.props.editOption.isEditOption === true
+          ? this.props.editOption.editElement.status
+          : INCOMPLETE_STATUS,
+    };
   }
 
   handleChangeTitle(event) {
@@ -33,34 +42,41 @@ export default class AddTask extends React.Component {
         bodyBackgroundColor="white"
         bodyTextColor="black"
         bodyHeight="200px"
-        headerText="Add Task"
+        headerText={this.props.headerText}
       >
         <div>
           <div>Title</div>
           <input
             style={{ width: 400, height: 30 }}
             onChange={(event) => this.handleChangeTitle(event)}
+            defaultValue={this.state.valueTitle}
           ></input>
 
           <div style={{ marginTop: 20 }}>Status</div>
           <div>
             <Dropdown
               options={statuses}
-              value={statuses.find((e) => e.value === INCOMPLETE_STATUS).label}
+              value={statuses.find((e) => e.value === this.state.status).label}
               onChange={(objectValue) => this.handleChangeCombobox(objectValue)}
             />
           </div>
           <div style={{ marginTop: 40 }}>
             <button
-              style={{ width: 60, height: 30, marginRight: 20 }}
+              style={{ width: 100, height: 40, marginRight: 20 }}
               onClick={() =>
-                this.props.addTask(this.state.valueTitle, this.state.status)
+                this.props.editOption.isEditOption
+                  ? this.props.editTask(
+                      this.props.editOption.editElement.id,
+                      this.state.valueTitle,
+                      this.state.status
+                    )
+                  : this.props.addTask(this.state.valueTitle, this.state.status)
               }
             >
-              Add
+              {this.props.buttonText}
             </button>
             <button
-              style={{ width: 60, height: 30 }}
+              style={{ width: 100, height: 40 }}
               onClick={this.props.closeDialog}
             >
               Cancel
@@ -72,8 +88,13 @@ export default class AddTask extends React.Component {
   }
 }
 
-AddTask.propTypes = {
-  addTask: PropTypes.func,
+DialogInputTask.propTypes = {
+  onComplete: PropTypes.func,
   openDialog: PropTypes.func,
   closeDialog: PropTypes.func,
+  headerText: PropTypes.string,
+  buttonText: PropTypes.string,
+  editOption: PropTypes.object,
+  editTask: PropTypes.func,
+  addTask: PropTypes.func,
 };

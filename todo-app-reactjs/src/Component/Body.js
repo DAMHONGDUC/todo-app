@@ -1,7 +1,7 @@
 "use strict";
 import React, { Component } from "react";
 import Task from "./Task";
-import AddTask from "./AddTask";
+import DialogInputTask from "./DialogInputTask";
 import Dropdown from "react-dropdown";
 import "react-js-dialog-box/dist/index.css";
 import "react-dropdown/style.css";
@@ -30,6 +30,10 @@ export default class Body extends Component {
 
     this.state = {
       isShowDialog: false,
+      editOption: {
+        isEditOption: false,
+        editElement: {},
+      },
       tasks: [
         {
           id: 1,
@@ -58,6 +62,8 @@ export default class Body extends Component {
     this.addTask = this.addTask.bind(this);
     this.openDialog = this.openDialog.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
+    this.activeEditMode = this.activeEditMode.bind(this);
+    this.editTask = this.editTask.bind(this);
   }
 
   openDialog = () => {
@@ -70,11 +76,18 @@ export default class Body extends Component {
     this.setState({
       isShowDialog: false,
     });
+
+    if (this.state.editOption.isEditOption) this.deactiveEditMode();
   };
 
   addTask(title, status) {
+    let tasks = this.state.tasks;
+    let idMax = tasks.reduce((acc, val) => {
+      return acc > val ? acc : val;
+    }).id;
+
     let newTask = {
-      id: this.state.tasks.length + 1,
+      id: idMax + 1,
       name: title,
       date: Date.now(),
       status: status,
@@ -84,7 +97,25 @@ export default class Body extends Component {
       tasks: [...this.state.tasks, newTask],
     });
 
-    console.log(newTask);
+    this.closeDialog();
+  }
+
+  componentDidUpdate() {
+    console.log("");
+    this.state.tasks.map((e) => console.log(e));
+  }
+
+  editTask(id, name, status) {
+    let newTasks = this.state.tasks;
+    let currTask = newTasks.find((e) => e.id === id);
+
+    currTask.name = name;
+    currTask.status = status;
+
+    this.setState({
+      tasks: [...newTasks],
+    });
+
     this.closeDialog();
   }
 
@@ -107,6 +138,25 @@ export default class Body extends Component {
     });
   }
 
+  activeEditMode(task) {
+    this.setState({
+      isShowDialog: true,
+      editOption: {
+        isEditOption: true,
+        editElement: task,
+      },
+    });
+  }
+
+  deactiveEditMode() {
+    this.setState({
+      editOption: {
+        isEditOption: false,
+        editElement: {},
+      },
+    });
+  }
+
   onChangeMode(objectValue) {
     this.setState({
       currMode: objectValue.value,
@@ -122,6 +172,8 @@ export default class Body extends Component {
         (e) => e.status === INCOMPLETE_STATUS
       );
     }
+
+    console.log({ ListTasks });
 
     return (
       <div style={{ padding: 20 }}>
@@ -140,11 +192,23 @@ export default class Body extends Component {
         </div>
 
         {this.state.isShowDialog && (
-          <AddTask
+          <DialogInputTask
+            buttonText={
+              this.state.editOption.isEditOption === true
+                ? "Update Task"
+                : "Add"
+            }
+            headerText={
+              this.state.editOption.isEditOption === true
+                ? "Update Task"
+                : "Add Task"
+            }
+            editTask={this.editTask}
             addTask={this.addTask}
+            editOption={this.state.editOption}
             openDialog={this.openDialog}
             closeDialog={this.closeDialog}
-          ></AddTask>
+          ></DialogInputTask>
         )}
 
         <div style={{ marginTop: 50 }}>
@@ -155,6 +219,7 @@ export default class Body extends Component {
                 onSelectTask={this.onSelectTask}
                 key={e.id}
                 task={e}
+                activeEditMode={this.activeEditMode}
               ></Task>
             ))
           ) : (
