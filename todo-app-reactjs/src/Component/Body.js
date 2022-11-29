@@ -1,4 +1,3 @@
-"use strict";
 import React, { Component } from "react";
 import Task from "./Task";
 import DialogInputTask from "./DialogInputTask";
@@ -6,23 +5,16 @@ import Dropdown from "react-dropdown";
 import "react-js-dialog-box/dist/index.css";
 import "react-dropdown/style.css";
 
-export const mode = [
-  { value: 0, label: "All" },
-  { value: 1, label: "Complete" },
-  { value: 2, label: "Incomplete" },
-];
+export const mode = {
+  ALL_MODE: "All",
+  COMPLETE_MODE: "Complete",
+  INCOMPLETE_MODE: "InComplete",
+};
 
-export const statuses = [
-  { value: 0, label: "Complete" },
-  { value: 1, label: "Incomplete" },
-];
-
-const ALL_MODE = 0;
-const COMPLETE_MODE = 1;
-const INCOMPLETE_MODE = 2;
-
-export const INCOMPLETE_STATUS = 1;
-export const COMPLETE_STATUS = 0;
+export const statuses = {
+  COMPLETE_STATUS: "Complete",
+  INCOMPLETE_STATUS: "Incomplete",
+};
 
 export default class Body extends Component {
   constructor(props) {
@@ -39,22 +31,22 @@ export default class Body extends Component {
           id: 1,
           name: "task 1",
           date: Date.now(),
-          status: 1,
+          status: statuses.INCOMPLETE_STATUS,
         },
         {
           id: 2,
           name: "task 2",
           date: Date.now(),
-          status: 0,
+          status: statuses.COMPLETE_STATUS,
         },
         {
           id: 3,
           name: "task 3",
           date: Date.now(),
-          status: 1,
+          status: statuses.INCOMPLETE_STATUS,
         },
       ],
-      currMode: ALL_MODE,
+      currMode: mode.ALL_MODE,
     };
 
     this.onSelectTask = this.onSelectTask.bind(this);
@@ -64,6 +56,7 @@ export default class Body extends Component {
     this.closeDialog = this.closeDialog.bind(this);
     this.activeEditMode = this.activeEditMode.bind(this);
     this.editTask = this.editTask.bind(this);
+    this.onChangeMode = this.onChangeMode.bind(this);
   }
 
   openDialog = () => {
@@ -100,11 +93,6 @@ export default class Body extends Component {
     this.closeDialog();
   }
 
-  componentDidUpdate() {
-    console.log("");
-    this.state.tasks.map((e) => console.log(e));
-  }
-
   editTask(id, name, status) {
     let newTasks = this.state.tasks;
     let currTask = newTasks.find((e) => e.id === id);
@@ -122,7 +110,7 @@ export default class Body extends Component {
   onSelectTask(id, value) {
     let newTasks = this.state.tasks;
     let elm = newTasks.find((o) => o.id === id);
-    elm.status = value === true ? COMPLETE_STATUS : INCOMPLETE_STATUS;
+    elm.status = value ? statuses.COMPLETE_STATUS : statuses.INCOMPLETE_STATUS;
 
     this.setState({
       tasks: newTasks,
@@ -158,22 +146,22 @@ export default class Body extends Component {
   }
 
   onChangeMode(objectValue) {
+    console.log(objectValue);
     this.setState({
       currMode: objectValue.value,
     });
   }
 
   render() {
-    let ListTasks = this.state.tasks;
-    if (this.state.currMode === COMPLETE_MODE) {
-      ListTasks = this.state.tasks.filter((e) => e.status === COMPLETE_STATUS);
-    } else if (this.state.currMode === INCOMPLETE_MODE) {
-      ListTasks = this.state.tasks.filter(
-        (e) => e.status === INCOMPLETE_STATUS
-      );
-    }
+    const { currMode, tasks } = this.state;
+    const filter = {
+      [mode.COMPLETE_MODE]: (item) => item.status === statuses.COMPLETE_STATUS,
+      [mode.INCOMPLETE_MODE]: (item) =>
+        item.status === statuses.INCOMPLETE_STATUS,
+      [mode.ALL_MODE]: () => true,
+    };
 
-    console.log({ ListTasks });
+    const newTasks = tasks.filter(filter[currMode]);
 
     return (
       <div style={{ padding: 20 }}>
@@ -185,23 +173,19 @@ export default class Body extends Component {
         </button>
         <div style={{ width: 150 }}>
           <Dropdown
-            options={mode}
-            value={mode.find((e) => e.value === ALL_MODE).label}
-            onChange={(objectValue) => this.onChangeMode(objectValue)}
+            options={Object.values(mode)}
+            value={this.state.currMode}
+            onChange={this.onChangeMode}
           />
         </div>
 
         {this.state.isShowDialog && (
           <DialogInputTask
             buttonText={
-              this.state.editOption.isEditOption === true
-                ? "Update Task"
-                : "Add"
+              this.state.editOption.isEditOption ? "Update Task" : "Add"
             }
             headerText={
-              this.state.editOption.isEditOption === true
-                ? "Update Task"
-                : "Add Task"
+              this.state.editOption.isEditOption ? "Update Task" : "Add Task"
             }
             editTask={this.editTask}
             addTask={this.addTask}
@@ -212,8 +196,8 @@ export default class Body extends Component {
         )}
 
         <div style={{ marginTop: 50 }}>
-          {ListTasks.length > 0 ? (
-            ListTasks.map((e) => (
+          {newTasks.length > 0 ? (
+            newTasks.map((e) => (
               <Task
                 onDeleteTask={this.onDeleteTask}
                 onSelectTask={this.onSelectTask}

@@ -5,7 +5,6 @@ import "react-js-dialog-box/dist/index.css";
 import "react-dropdown/style.css";
 import PropTypes from "prop-types";
 import { statuses } from "./Body";
-import { INCOMPLETE_STATUS } from "./Body";
 
 export default class DialogInputTask extends React.Component {
   constructor(props) {
@@ -18,7 +17,7 @@ export default class DialogInputTask extends React.Component {
       status:
         this.props.editOption.isEditOption === true
           ? this.props.editOption.editElement.status
-          : INCOMPLETE_STATUS,
+          : statuses.INCOMPLETE_STATUS,
     };
   }
 
@@ -55,8 +54,8 @@ export default class DialogInputTask extends React.Component {
           <div style={{ marginTop: 20 }}>Status</div>
           <div>
             <Dropdown
-              options={statuses}
-              value={statuses.find((e) => e.value === this.state.status).label}
+              options={Object.values(statuses)}
+              value={statuses.INCOMPLETE_STATUS}
               onChange={(objectValue) => this.handleChangeCombobox(objectValue)}
             />
           </div>

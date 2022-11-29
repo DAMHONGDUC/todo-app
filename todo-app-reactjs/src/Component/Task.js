@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Checkbox } from "react-widget-checkbox";
 import "react-widget-checkbox/style";
-import { COMPLETE_STATUS } from "./Body";
+import { statuses } from "./Body";
 
 export default class Task extends Component {
   constructor(props) {
@@ -21,7 +21,9 @@ export default class Task extends Component {
                 this.props.onSelectTask(this.props.task.id, value)
               }
               checked={
-                this.props.task.status === COMPLETE_STATUS ? true : false
+                this.props.task.status === statuses.COMPLETE_STATUS
+                  ? true
+                  : false
               }
             ></Checkbox>
           </td>
