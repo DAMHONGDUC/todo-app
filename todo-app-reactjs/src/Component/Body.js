@@ -54,6 +54,7 @@ export default class Body extends Component {
     };
 
     this.onSelectTask = this.onSelectTask.bind(this);
+    this.onDeleteTask = this.onDeleteTask.bind(this);
     this.addTask = this.addTask.bind(this);
     this.openDialog = this.openDialog.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
@@ -90,13 +91,20 @@ export default class Body extends Component {
   onSelectTask(id, value) {
     let newTasks = this.state.tasks;
     let elm = newTasks.find((o) => o.id === id);
-    elm.isChecked = value;
+    elm.status = value === true ? COMPLETE_STATUS : INCOMPLETE_STATUS;
 
     this.setState({
       tasks: newTasks,
     });
+  }
 
-    console.log("select ", id);
+  onDeleteTask(id) {
+    let tasks = this.state.tasks;
+    let newTasks = tasks.filter((o) => o.id !== id);
+
+    this.setState({
+      tasks: newTasks,
+    });
   }
 
   onChangeMode(objectValue) {
@@ -140,9 +148,23 @@ export default class Body extends Component {
         )}
 
         <div style={{ marginTop: 50 }}>
-          {ListTasks.map((e) => (
-            <Task onSelectTask={this.onSelectTask} key={e.id} task={e}></Task>
-          ))}
+          {ListTasks.length > 0 ? (
+            ListTasks.map((e) => (
+              <Task
+                onDeleteTask={this.onDeleteTask}
+                onSelectTask={this.onSelectTask}
+                key={e.id}
+                task={e}
+              ></Task>
+            ))
+          ) : (
+            <div
+              style={{ padding: 20, background: "#BC8F8F", marginBottom: 20 }}
+            >
+              {" "}
+              No Todo Found
+            </div>
+          )}
         </div>
       </div>
     );

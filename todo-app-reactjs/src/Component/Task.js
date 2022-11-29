@@ -36,7 +36,12 @@ export default class Task extends Component {
             <label style={{ fontSize: 13 }}>{datetime}</label>
           </td>
           <td>
-            <button style={{ marginLeft: 100, width: 50 }}>delete</button>
+            <button
+              onClick={() => this.props.onDeleteTask(this.props.task.id)}
+              style={{ marginLeft: 100, width: 50 }}
+            >
+              delete
+            </button>
           </td>
         </tr>
       </table>
@@ -47,4 +52,5 @@ export default class Task extends Component {
 Task.propTypes = {
   task: PropTypes.object,
   onSelectTask: PropTypes.func,
+  onDeleteTask: PropTypes.func,
 };
