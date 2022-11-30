@@ -75,9 +75,12 @@ export default class Body extends Component {
 
   addTask(title, status) {
     let tasks = this.state.tasks;
-    let idMax = tasks.reduce((acc, val) => {
-      return acc > val ? acc : val;
-    }).id;
+
+    let idMax = 0;
+    if (tasks.length > 0)
+      idMax = tasks.reduce((acc, val) => {
+        return acc > val ? acc : val;
+      }).id;
 
     let newTask = {
       id: idMax + 1,
@@ -113,7 +116,7 @@ export default class Body extends Component {
     elm.status = value ? statuses.COMPLETE_STATUS : statuses.INCOMPLETE_STATUS;
 
     this.setState({
-      tasks: newTasks,
+      tasks: [...newTasks],
     });
   }
 
@@ -146,7 +149,6 @@ export default class Body extends Component {
   }
 
   onChangeMode(objectValue) {
-    console.log(objectValue);
     this.setState({
       currMode: objectValue.value,
     });
@@ -208,9 +210,17 @@ export default class Body extends Component {
             ))
           ) : (
             <div
-              style={{ padding: 20, background: "#BC8F8F", marginBottom: 20 }}
+              style={{
+                height: 50,
+                width: 340,
+                padding: 20,
+                background: "#BC8F8F",
+                marginBottom: 20,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              {" "}
               No Todo Found
             </div>
           )}

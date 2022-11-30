@@ -9,15 +9,14 @@ import { statuses } from "./Body";
 export default class DialogInputTask extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      valueTitle:
-        this.props.editOption.isEditOption === true
-          ? this.props.editOption.editElement.name
-          : "",
-      status:
-        this.props.editOption.isEditOption === true
-          ? this.props.editOption.editElement.status
-          : statuses.INCOMPLETE_STATUS,
+      valueTitle: this.props.editOption.isEditOption
+        ? this.props.editOption.editElement.name
+        : "",
+      status: this.props.editOption.isEditOption
+        ? this.props.editOption.editElement.status
+        : statuses.INCOMPLETE_STATUS,
     };
   }
 
@@ -30,6 +29,9 @@ export default class DialogInputTask extends React.Component {
   }
 
   render() {
+    const { isEditOption, editElement } = this.props.editOption;
+    const { buttonText, headerText } = this.props;
+
     return (
       <ReactDialogBox
         closeBox={this.props.closeDialog}
@@ -41,7 +43,7 @@ export default class DialogInputTask extends React.Component {
         bodyBackgroundColor="white"
         bodyTextColor="black"
         bodyHeight="200px"
-        headerText={this.props.headerText}
+        headerText={headerText}
       >
         <div>
           <div>Title</div>
@@ -55,7 +57,9 @@ export default class DialogInputTask extends React.Component {
           <div>
             <Dropdown
               options={Object.values(statuses)}
-              value={statuses.INCOMPLETE_STATUS}
+              value={
+                isEditOption ? editElement.status : statuses.INCOMPLETE_STATUS
+              }
               onChange={(objectValue) => this.handleChangeCombobox(objectValue)}
             />
           </div>
@@ -63,16 +67,16 @@ export default class DialogInputTask extends React.Component {
             <button
               style={{ width: 100, height: 40, marginRight: 20 }}
               onClick={() =>
-                this.props.editOption.isEditOption
+                isEditOption
                   ? this.props.editTask(
-                      this.props.editOption.editElement.id,
+                      editElement.id,
                       this.state.valueTitle,
                       this.state.status
                     )
                   : this.props.addTask(this.state.valueTitle, this.state.status)
               }
             >
-              {this.props.buttonText}
+              {buttonText}
             </button>
             <button
               style={{ width: 100, height: 40 }}
