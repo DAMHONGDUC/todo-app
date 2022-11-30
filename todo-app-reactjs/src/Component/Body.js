@@ -27,24 +27,24 @@ export default class Body extends Component {
         editElement: {},
       },
       tasks: [
-        {
-          id: 1,
-          name: "task 1",
-          date: Date.now(),
-          status: statuses.INCOMPLETE_STATUS,
-        },
-        {
-          id: 2,
-          name: "task 2",
-          date: Date.now(),
-          status: statuses.COMPLETE_STATUS,
-        },
-        {
-          id: 3,
-          name: "task 3",
-          date: Date.now(),
-          status: statuses.INCOMPLETE_STATUS,
-        },
+        // {
+        //   id: 1,
+        //   name: "task 1",
+        //   date: Date.now(),
+        //   status: statuses.INCOMPLETE_STATUS,
+        // },
+        // {
+        //   id: 2,
+        //   name: "task 2",
+        //   date: Date.now(),
+        //   status: statuses.COMPLETE_STATUS,
+        // },
+        // {
+        //   id: 3,
+        //   name: "task 3",
+        //   date: Date.now(),
+        //   status: statuses.INCOMPLETE_STATUS,
+        // },
       ],
       currMode: mode.ALL_MODE,
     };
