@@ -1,31 +1,31 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { Checkbox } from "react-widget-checkbox";
 import "react-widget-checkbox/style";
 import { statuses } from "./Body";
 
-export default class Task extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    const { task } = this.props;
-
-    let datetime = new Date(task.date).toLocaleString("en-US");
-    return (
-      <table style={{ padding: 20, background: "#BC8F8F", marginBottom: 20 }}>
+export default function Task({
+  task,
+  onSelectTask,
+  activeEditMode,
+  onDeleteTask,
+}) {
+  let datetime = new Date(task.date).toLocaleString("en-US");
+  return (
+    <table style={{ padding: 20, background: "#BC8F8F", marginBottom: 20 }}>
+      <tbody>
         <tr>
           <td>
-            <Checkbox
-              style={{ marginRight: 10 }}
-              onChange={(value) => this.props.onSelectTask(task.id, value)}
-              checked={task.status === statuses.COMPLETE_STATUS ? true : false}
-            ></Checkbox>
+            <input
+              type="checkbox"
+              style={{ marginRight: 10, height: 30, width: 25 }}
+              checked={task.status === statuses.COMPLETE_STATUS}
+              onChange={(e) => onSelectTask(task.id, e.target.checked)}
+            ></input>
           </td>
           <td>{task.name}</td>
           <td>
             <button
-              onClick={() => this.props.activeEditMode(task)}
+              onClick={() => activeEditMode(task)}
               style={{ marginLeft: 100, width: 50 }}
             >
               edit
@@ -39,16 +39,16 @@ export default class Task extends Component {
           </td>
           <td>
             <button
-              onClick={() => this.props.onDeleteTask(task.id)}
+              onClick={() => onDeleteTask(task.id)}
               style={{ marginLeft: 100, width: 50 }}
             >
               delete
             </button>
           </td>
         </tr>
-      </table>
-    );
-  }
+      </tbody>
+    </table>
+  );
 }
 
 Task.propTypes = {
